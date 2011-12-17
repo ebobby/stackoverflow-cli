@@ -21,7 +21,7 @@ void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         { NULL, no_argument, NULL, 0 }
     };
 
-    char *optstring = "Sn:g:t:s:p:";
+    char *optstring = "Sn:g:t:s:p:h?";
 
     memset(opts, 0, sizeof(stackoverflow_cli_opts));
 
@@ -58,8 +58,6 @@ void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
             break;
         case 'h':
         case '?':
-            print_usage(argv[0], NULL);
-            break;
         default:
             break;
 
