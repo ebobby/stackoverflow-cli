@@ -12,5 +12,5 @@ int main (void) {
 
     www_free_response(&response);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
