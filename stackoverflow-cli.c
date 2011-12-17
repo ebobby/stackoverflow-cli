@@ -5,5 +5,8 @@ int main (int argc, char **argv) {
 
     process_arguments(argc, argv, &global_opts);
 
+    if (global_opts.operation == none)
+        return EXIT_FAILURE;
+
     return EXIT_SUCCESS;
 }
