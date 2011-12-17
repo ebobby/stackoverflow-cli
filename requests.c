@@ -25,7 +25,7 @@ static size_t request_callback (char *ptr, size_t size, size_t nmemb, void *usr)
     return realsize;
 }
 
-void www_make_request (char *url, responseObject *response) {
+void www_make_request (const char *url, responseObject *response) {
     CURL *curlHandle = NULL;
 
     curl_global_init(CURL_GLOBAL_ALL);

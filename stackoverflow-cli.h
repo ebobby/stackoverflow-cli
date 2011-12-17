@@ -11,7 +11,7 @@ typedef struct responseObject {
     char *data;
 } responseObject;
 
-void www_make_request (char *url, responseObject *response);
+void www_make_request (const char *url, responseObject *response);
 void www_free_response (responseObject *response);
 /********************************************************/
 
