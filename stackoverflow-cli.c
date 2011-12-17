@@ -1,16 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "stackoverflow-cli.h"
 
-int main (void) {
-    responseObject response;
+int main (int argc, char **argv) {
+    stackoverflow_cli_opts global_opts;
 
-    www_make_request("http://api.stackoverflow.com/1.1/questions?pagesize=2", &response);
 
-    printf("Stackoverflow result:\n%s\n", response.data);
+    process_arguments(argc, argv, &global_opts);
 
-    www_free_response(&response);
+    printf("%i\n", global_opts.operation);
+
+    if (global_opts.nottagged != NULL)
+        printf("%s\n", global_opts.nottagged);
+    if (global_opts.tagged != NULL)
+        printf("%s\n", global_opts.tagged);
+    if (global_opts.intitle != NULL)
+        printf("%s\n", global_opts.intitle);
+    printf("%i\n", global_opts.pagesize);
+    printf("%i\n", global_opts.page);
 
     return EXIT_SUCCESS;
 }
