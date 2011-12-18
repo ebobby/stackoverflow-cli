@@ -8,5 +8,8 @@ int main (int argc, char **argv) {
     if (global_opts.operation == none)
         return EXIT_FAILURE;
 
+    if (global_opts.operation == search)
+        run_search_command(&global_opts);
+
     return EXIT_SUCCESS;
 }
