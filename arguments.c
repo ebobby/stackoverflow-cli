@@ -27,8 +27,6 @@ void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
 
     /* Some sane defaults */
     opts->operation = none;
-    opts->page = 0;
-    opts->pagesize = 100;
 
     for (;;) {
         int opt_index = 0;
@@ -51,10 +49,10 @@ void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
             opts->intitle = optarg;
             break;
         case 's':
-            opts->pagesize = atoi(optarg);
+            opts->pagesize = optarg;
             break;
         case 'p':
-            opts->page = atoi(optarg);
+            opts->page = optarg;
             break;
         case 'h':
         case '?':

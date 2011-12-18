@@ -23,8 +23,8 @@ typedef struct stackoverflow_cli_opts {
     char *nottagged;
     char *tagged;
     char *intitle;
-    int  pagesize;
-    int  page;
+    char *pagesize;
+    char *page;
 } stackoverflow_cli_opts;
 
 void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts);
