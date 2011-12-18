@@ -36,9 +36,7 @@ void www_make_request (const char *url, responseObject *response) {
     curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "\0");
     curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, request_callback);
     curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)response);
-
     curl_easy_perform(curlHandle);
-
     curl_easy_cleanup(curlHandle);
 }
 
