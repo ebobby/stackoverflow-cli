@@ -13,8 +13,8 @@ static char *build_url (const char *op, int argc, ...) {
     char buffer[URL_BUILDER_ALLOCATION_BLOCK];
 
     if (result == NULL) {
-        printf("Not enough memory!");
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "Not enough memory!");
+        return NULL;
     }
 
     memset(result, 0, URL_BUILDER_ALLOCATION_BLOCK);
@@ -33,8 +33,9 @@ static char *build_url (const char *op, int argc, ...) {
             /* current url, plus the new key/value, plus the =, & and the null terminator */
             if (cur_len + key_len + value_len + 3 > cur_alloc) {
                 if (!realloc(result, cur_alloc + URL_BUILDER_ALLOCATION_BLOCK)) {
-                    printf("Not enough memory!");
-                    exit(EXIT_FAILURE);
+                    fprintf(stderr, "Not enough memory!");
+                    free(result);
+                    return NULL;
                 } else {
                     memset(result + cur_alloc, 0, URL_BUILDER_ALLOCATION_BLOCK);
                     cur_alloc += URL_BUILDER_ALLOCATION_BLOCK;
@@ -53,16 +54,22 @@ static char *build_url (const char *op, int argc, ...) {
     return result;
 }
 
-void run_search_command (stackoverflow_cli_opts *opts) {
+int run_search_command (stackoverflow_cli_opts *opts) {
+    responseObject response;
     char *url = build_url("search", 5,
                           "nottagged", opts->nottagged,
                           "tagged", opts->tagged,
                           "intitle", opts->intitle,
                           "pagesize", opts->pagesize,
                           "page", opts->page);
-    responseObject response;
+
+    if (url == NULL)
+        return 0;
 
     www_make_request(url, &response);
+
+    if (response.size == 0)
+        return 0;
 
     printf("%s\n", response.data);
 

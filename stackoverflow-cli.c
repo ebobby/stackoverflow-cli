@@ -2,14 +2,14 @@
 
 int main (int argc, char **argv) {
     stackoverflow_cli_opts global_opts;
+    int result = EXIT_FAILURE;
 
     process_arguments(argc, argv, &global_opts);
 
     if (global_opts.operation == none)
-        return EXIT_FAILURE;
+        result = EXIT_FAILURE;
+    else if (global_opts.operation == search)
+        result = run_search_command(&global_opts) ? EXIT_SUCCESS : EXIT_FAILURE;
 
-    if (global_opts.operation == search)
-        run_search_command(&global_opts);
-
-    return EXIT_SUCCESS;
+    return result;
 }

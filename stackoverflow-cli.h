@@ -32,7 +32,7 @@ void print_usage (const char *name, const char *msg);
 /********************************************************/
 
 /*** Helpers from stackoverflow.c ***********************/
-void run_search_command (stackoverflow_cli_opts *opts);
+int run_search_command (stackoverflow_cli_opts *opts);
 /********************************************************/
 
 #define STACKOVERFLOW_API_URL "http://api.stackoverflow.com/1.1/"
