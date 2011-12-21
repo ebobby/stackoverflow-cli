@@ -12,7 +12,7 @@ stackoverflow-cli.o: stackoverflow-cli.c stackoverflow-cli.h
 	$(CC) -c $< -o $@
 
 stackoverflow-cli: $(OBJ)
-	$(CC) -o $@ -lcurl $(OBJ)
+	$(CC) -o $@ -lcurl -ljson $(OBJ)
 
 clean:
 	rm -rf *.o stackoverflow-cli

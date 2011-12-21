@@ -1,6 +1,7 @@
 #include "stackoverflow-cli.h"
 
 #include <stdarg.h>
+#include <json/json.h>
 
 #define URL_BUILDER_ALLOCATION_BLOCK 256
 
@@ -70,6 +71,24 @@ int run_search_command (stackoverflow_cli_opts *opts) {
 
     if (response.size == 0)
         return 0;
+
+    json_object *jobj = json_tokener_parse(response.data);
+
+    if (jobj == NULL) {
+        fprintf(stderr, "Not a valid JSON response?!\n");
+        www_free_response(&response);
+        free(url);
+        return 0;
+    }
+
+    json_object *jerror = json_object_object_get(jobj, "error");
+
+    if (jerror != NULL) {
+        fprintf(stderr, "%s\n", json_object_get_string(json_object_object_get(jerror, "message")));
+        www_free_response(&response);
+        free(url);
+        return 0;
+    }
 
     printf("%s\n", response.data);
 
