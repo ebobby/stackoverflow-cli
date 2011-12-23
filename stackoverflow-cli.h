@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <time.h>
 
 /** Helpers from requests.c *****************************/
 typedef struct responseObject {
