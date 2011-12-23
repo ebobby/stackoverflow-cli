@@ -31,7 +31,7 @@ char *buildUrl (const char *op, int argc, ...) {
     char *result = malloc(URL_BUILDER_ALLOCATION_BLOCK);
     int cur_len = 0, cur_alloc = URL_BUILDER_ALLOCATION_BLOCK;
     va_list ap;
-    char *key = NULL, *value = NULL;
+    char *key = NULL, *value = NULL, *escaped_key = NULL, *escaped_value = NULL;
     int key_len, value_len, i;
     char buffer[URL_BUILDER_ALLOCATION_BLOCK];
     CURL *curlHandle = NULL;
@@ -64,10 +64,24 @@ char *buildUrl (const char *op, int argc, ...) {
             key_len = strlen(key);
             value_len = strlen(value);
 
+            escaped_key = curl_easy_escape(curlHandle, key, key_len);
+            escaped_value = curl_easy_escape(curlHandle, value, value_len);
+
+            if (escaped_key == NULL || escaped_value == NULL) {
+                fprintf(stderr, "Not enough memory!\n");
+                curl_easy_cleanup(curlHandle);
+                free(result);
+                return NULL;
+            }
+
+            key_len = strlen(escaped_key);
+            value_len = strlen(escaped_value);
+
             /* current url, plus the new key/value, plus the =, & and the null terminator */
             if (cur_len + key_len + value_len + 3 > cur_alloc) {
                 if (!realloc(result, cur_alloc + URL_BUILDER_ALLOCATION_BLOCK)) {
                     fprintf(stderr, "Not enough memory!\n");
+                    curl_easy_cleanup(curlHandle);
                     free(result);
                     return NULL;
                 } else {
@@ -77,13 +91,18 @@ char *buildUrl (const char *op, int argc, ...) {
             }
 
             memset(buffer, 0, URL_BUILDER_ALLOCATION_BLOCK);
-            snprintf(buffer, URL_BUILDER_ALLOCATION_BLOCK, "%s=%s&", key, value);
+            snprintf(buffer, URL_BUILDER_ALLOCATION_BLOCK, "%s=%s&", escaped_key, escaped_value);
 
             strncat(result, buffer, cur_alloc - cur_len - 1);
             cur_len += strlen(buffer);
+
+            curl_free(escaped_key);
+            curl_free(escaped_value);
         }
     }
     va_end(ap);
+
+    curl_easy_cleanup(curlHandle);
 
     return result;
 }
