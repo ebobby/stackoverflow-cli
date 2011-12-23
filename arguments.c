@@ -6,8 +6,19 @@ void printUsage (const char *name, const char *msg) {
     if (msg != NULL)
         fprintf(stderr, "%s\n", msg);
 
-    printf("Usage: %s <operation> [options...]\n", name);
-
+    printf("Usage: %s <operation> [options...]\n\n", name);
+    printf("Operations has to be one of the following:\n\n");
+    printf("Search:\n");
+    printf("\t--search\t\tSpecies this operation.\n");
+    printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
+    printf("\t--tagged <string>\tList of tags delimited by semicolons at least one has to be on the questions.\n");
+    printf("\t--nottagged <string>\tList of tags delimited by semicolons that must not be in the question.\n");
+    printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
+    printf("\n");
+    printf("Generic parameters:\n\n");
+    printf("\t--pagesize <size>\tHow many items per page? 100 maximum.\n");
+    printf("\t--page <page>\t\tWhat page do you want to see?\n");
+    printf("\n");
 }
 
 void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
