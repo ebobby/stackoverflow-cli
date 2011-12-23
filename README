@@ -1,0 +1,7 @@
+*stackoverflow-cli* is a command line interface to the stackoverflow API designed to be run in text environments in combination with other GNU tools to extract useful information.
+
+To compile this thing you need libcurl and json-c libraries, downnload the code and run the Makefile.
+
+No configure script yet.
+
+Right now only the --search command is working, I plan on implementing more like --user and --question, contributions are more than welcome if I picked your interested feel free to send patches and/or pull requests.
