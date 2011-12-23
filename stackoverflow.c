@@ -5,7 +5,7 @@
 
 #define URL_BUILDER_ALLOCATION_BLOCK 256
 
-static char *build_url (const char *op, int argc, ...) {
+static char *buildUrl (const char *op, int argc, ...) {
     char *result = malloc(URL_BUILDER_ALLOCATION_BLOCK);
     int cur_len = 0, cur_alloc = URL_BUILDER_ALLOCATION_BLOCK;
     va_list ap;
@@ -55,19 +55,19 @@ static char *build_url (const char *op, int argc, ...) {
     return result;
 }
 
-int run_search_command (stackoverflow_cli_opts *opts) {
+int searchCommand (stackoverflow_cli_opts *opts) {
     responseObject response;
-    char *url = build_url("search", 5,
-                          "nottagged", opts->nottagged,
-                          "tagged", opts->tagged,
-                          "intitle", opts->intitle,
-                          "pagesize", opts->pagesize,
-                          "page", opts->page);
+    char *url = buildUrl("search", 5,
+                         "nottagged", opts->nottagged,
+                         "tagged", opts->tagged,
+                         "intitle", opts->intitle,
+                         "pagesize", opts->pagesize,
+                         "page", opts->page);
 
     if (url == NULL)
         return 0;
 
-    www_make_request(url, &response);
+    makeWebRequest(url, &response);
 
     if (response.size == 0)
         return 0;
@@ -76,7 +76,7 @@ int run_search_command (stackoverflow_cli_opts *opts) {
 
     if (jobj == NULL || is_error(jobj)) {
         fprintf(stderr, "Not a valid JSON response?!\n");
-        www_free_response(&response);
+        freeWebResponse(&response);
         free(url);
         return 0;
     }
@@ -85,13 +85,13 @@ int run_search_command (stackoverflow_cli_opts *opts) {
 
     if (jerror != NULL) {
         fprintf(stderr, "%s\n", json_object_get_string(json_object_object_get(jerror, "message")));
-        www_free_response(&response);
+        freeWebResponse(&response);
         free(url);
         return 0;
     }
 
     printf("%s\n", response.data);
 
-    www_free_response(&response);
+    freeWebResponse(&response);
     free(url);
 }

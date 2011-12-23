@@ -2,7 +2,7 @@
 
 #include <getopt.h>
 
-void print_usage (const char *name, const char *msg) {
+void printUsage (const char *name, const char *msg) {
     if (msg != NULL)
         fprintf(stderr, "%s\n", msg);
 
@@ -10,7 +10,7 @@ void print_usage (const char *name, const char *msg) {
 
 }
 
-void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
+void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
     static const struct option getopt_long_opts[] = {
         { "search",    no_argument,       NULL, 'S' },
         { "nottagged", required_argument, NULL, 'n' },
@@ -63,7 +63,7 @@ void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
     }
 
     if (opts->operation == none) {
-        print_usage(argv[0], NULL);
+        printUsage(argv[0], NULL);
         return;
     }
 }

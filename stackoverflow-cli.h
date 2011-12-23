@@ -11,8 +11,8 @@ typedef struct responseObject {
     char *data;
 } responseObject;
 
-void www_make_request (const char *url, responseObject *response);
-void www_free_response (responseObject *response);
+void makeWebRequest (const char *url, responseObject *response);
+void freeWebResponse (responseObject *response);
 /********************************************************/
 
 /** Helpers from arguments.c ****************************/
@@ -27,12 +27,12 @@ typedef struct stackoverflow_cli_opts {
     char *page;
 } stackoverflow_cli_opts;
 
-void process_arguments (int argc, char **argv, stackoverflow_cli_opts *opts);
-void print_usage (const char *name, const char *msg);
+void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts);
+void printUsage (const char *name, const char *msg);
 /********************************************************/
 
 /*** Helpers from stackoverflow.c ***********************/
-int run_search_command (stackoverflow_cli_opts *opts);
+int searchCommand (stackoverflow_cli_opts *opts);
 /********************************************************/
 
 #define STACKOVERFLOW_API_URL "http://api.stackoverflow.com/1.1/"
