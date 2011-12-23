@@ -74,7 +74,7 @@ int run_search_command (stackoverflow_cli_opts *opts) {
 
     json_object *jobj = json_tokener_parse(response.data);
 
-    if (jobj == NULL) {
+    if (jobj == NULL || is_error(jobj)) {
         fprintf(stderr, "Not a valid JSON response?!\n");
         www_free_response(&response);
         free(url);
