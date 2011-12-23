@@ -122,7 +122,7 @@ void makeWebRequest (const char *url, responseObject *response) {
     }
 
     curl_easy_setopt(curlHandle, CURLOPT_URL, url);
-    curl_easy_setopt(curlHandle, CURLOPT_ACCEPT_ENCODING, "\0");
+    curl_easy_setopt(curlHandle, CURLOPT_ENCODING, "\0");
     curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, requestCallback);
     curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)response);
     curl_easy_perform(curlHandle);
