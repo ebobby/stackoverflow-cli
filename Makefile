@@ -9,10 +9,10 @@ arguments.o: arguments.c stackoverflow-cli.h
 stackoverflow-cli.o: stackoverflow-cli.c stackoverflow-cli.h
 
 %.o: %.c
-	$(CC) -c $< -o $@
+	$(CC) -ggdb -c $< -o $@
 
 stackoverflow-cli: $(OBJ)
-	$(CC) -o $@ -lcurl -ljson $(OBJ)
+	$(CC) -ggdb -o $@ -lcurl -ljson $(OBJ)
 
 clean:
 	rm -rf *.o stackoverflow-cli
