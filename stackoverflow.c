@@ -46,9 +46,7 @@ int searchCommand (stackoverflow_cli_opts *opts) {
         return 0;
     }
 
-    int numQuestions = json_object_array_length(questions);
-
-    for (int i = 0; i < numQuestions; i++) {
+    for (int i = 0; i < json_object_array_length(questions); i++) {
         json_object *question = json_object_array_get_idx(questions, i);
 
         time_t created_stamp = json_object_get_int(json_object_object_get(question, "creation_date"));
