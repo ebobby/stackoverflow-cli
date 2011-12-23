@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 /** Helpers from requests.c *****************************/
 typedef struct responseObject {
@@ -32,6 +33,7 @@ void printUsage (const char *name, const char *msg);
 /********************************************************/
 
 /*** Helpers from stackoverflow.c ***********************/
+char *buildUrl (const char *op, int argc, ...);
 int searchCommand (stackoverflow_cli_opts *opts);
 /********************************************************/
 
