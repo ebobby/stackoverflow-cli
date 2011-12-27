@@ -9,13 +9,13 @@ void printUsage (const char *name, const char *msg) {
     printf("Usage: %s <operation> [options...]\n\n", name);
     printf("Operations has to be one of the following:\n\n");
     printf("Search:\n");
-    printf("\t--search\t\tSpecies this operation.\n");
+    printf("\t--search\t\tSearches the questions database.\n");
     printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
     printf("\t--tagged <string>\tList of tags delimited by semicolons at least one has to be on the questions.\n");
     printf("\t--nottagged <string>\tList of tags delimited by semicolons that must not be in the question.\n");
     printf("\n");
     printf("Users:\n");
-    printf("\t--users\t\t\tSpecies this operation.\n");
+    printf("\t--users\t\t\tSearches the users database.\n");
     printf("\t--filter <string>\tA string that must appear in the users name.\n");
     printf("\n");
     printf("Generic parameters:\n\n");
