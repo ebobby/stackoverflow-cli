@@ -15,6 +15,10 @@ void printUsage (const char *name, const char *msg) {
     printf("\t--nottagged <string>\tList of tags delimited by semicolons that must not be in the question.\n");
     printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
     printf("\n");
+    printf("Users:\n");
+    printf("\t--users\t\t\tSpecies this operation.\n");
+    printf("\t--filter <string>\tA string that must appear in the users name.\n");
+    printf("\n");
     printf("Generic parameters:\n\n");
     printf("\t--pagesize <size>\tHow many items per page? 100 maximum.\n");
     printf("\t--page <page>\t\tWhat page do you want to see?\n");
@@ -29,10 +33,12 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         { "intitle",   required_argument, NULL, 't' },
         { "pagesize",  required_argument, NULL, 's' },
         { "page",      required_argument, NULL, 'p' },
+        { "users",     no_argument,       NULL, 'U' },
+        { "filter",    required_argument, NULL, 'f' },
         { NULL, no_argument, NULL, 0 }
     };
 
-    char *optstring = "Sn:g:t:s:p:h?";
+    char *optstring = "SUn:g:t:s:p:f:h?";
 
     memset(opts, 0, sizeof(stackoverflow_cli_opts));
 
@@ -50,6 +56,9 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         case 'S':
             opts->operation = search;
             break;
+        case 'U':
+            opts->operation = users;
+            break;
         case 'n':
             opts->nottagged = optarg;
             break;
@@ -65,11 +74,13 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         case 'p':
             opts->page = optarg;
             break;
+        case 'f':
+            opts->filter = optarg;
+            break;
         case 'h':
         case '?':
         default:
             break;
-
         }
     }
 

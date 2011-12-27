@@ -10,6 +10,8 @@ int main (int argc, char **argv) {
         result = EXIT_FAILURE;
     else if (global_opts.operation == search)
         result = searchCommand(&global_opts) ? EXIT_SUCCESS : EXIT_FAILURE;
+    else if (global_opts.operation == users)
+        result = usersCommand(&global_opts) ? EXIT_SUCCESS : EXIT_FAILURE;
 
     return result;
 }

@@ -75,3 +75,71 @@ int searchCommand (stackoverflow_cli_opts *opts) {
 
     return 1;
 }
+
+int usersCommand (stackoverflow_cli_opts *opts) {
+    responseObject response;
+    char *url = buildUrl("users", 3,
+                         "filter", opts->filter,
+                         "pagesize", opts->pagesize,
+                         "page", opts->page);
+
+    if (url == NULL)
+        return 0;
+
+    makeWebRequest(url, &response);
+
+    if (response.size == 0)
+        return 0;
+
+    json_object *jsonDoc = json_tokener_parse(response.data);
+
+    if (jsonDoc == NULL || is_error(jsonDoc)) {
+        fprintf(stderr, "Not a valid JSON response?!\n");
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    json_object *jerror = json_object_object_get(jsonDoc, "error");
+
+    if (jerror != NULL) {
+        fprintf(stderr, "%s\n", json_object_get_string(json_object_object_get(jerror, "message")));
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    json_object *users = json_object_object_get(jsonDoc, "users");
+
+    if (json_object_get_type(users) != json_type_array) {
+        fprintf(stderr, "Users is expected to be an array!");
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    for (int i = 0; i < json_object_array_length(users); i++) {
+        json_object *user = json_object_array_get_idx(users, i);
+
+        time_t created_stamp = json_object_get_int(json_object_object_get(user, "creation_date"));
+        struct tm *created = gmtime(&created_stamp);
+
+        printf("id: %i || ", json_object_get_int(json_object_object_get(user, "user_id")));
+        printf("name: %s || ", json_object_get_string(json_object_object_get(user, "display_name")));
+        printf("type: %s || ", json_object_get_string(json_object_object_get(user, "user_type")));
+        printf("reputation: %i || ", json_object_get_int(json_object_object_get(user, "reputation")));
+        printf("created: %i/%i/%i %i:%i:%i",
+               created->tm_mday,
+               created->tm_mon + 1,
+               created->tm_year + 1900,
+               created->tm_hour + 1,
+               created->tm_min + 1,
+               created->tm_sec + 1);
+        printf("\n");
+    }
+
+    freeWebResponse(&response);
+    free(url);
+
+    return 1;
+}
