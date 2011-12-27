@@ -1,10 +1,10 @@
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Darwin)
-  CFLAGS ?=-std=c99 -ggdb -I/opt/local/include
+  CFLAGS ?=-Wall -std=c99 -ggdb -I/opt/local/include
   CCLINK ?=-ljson -lcurl -L/opt/local/lib
 else
-  CFLAGS ?=-std=c99 -ggdb
+  CFLAGS ?=-Wall -std=c99 -ggdb
   CCLINK ?=-ljson -lcurl
 endif
 
