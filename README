@@ -4,4 +4,21 @@ To compile this thing you need libcurl and json-c libraries, downnload the code 
 
 No configure script yet.
 
-Right now only the --search command is working, I plan on implementing more like --user and --question, contributions are more than welcome if I picked your interested feel free to send patches and/or pull requests.
+Usage: /home/fms/projects/stackoverflow-cli/stackoverflow-cli <operation> [options...]
+
+Operations has to be one of the following:
+
+Search:
+	--search		Searches the questions database.
+	--intitle <string>	A string that must appear verbatim in the title.
+	--tagged <string>	List of tags delimited by semicolons at least one has to be on the questions.
+	--nottagged <string>	List of tags delimited by semicolons that must not be in the question.
+
+Users:
+	--users			Searches the users database.
+	--filter <string>	A string that must appear in the users name.
+
+Generic parameters:
+
+	--pagesize <size>	How many items per page? 100 maximum.
+	--page <page>		What page do you want to see?
