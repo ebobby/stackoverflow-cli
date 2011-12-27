@@ -128,6 +128,10 @@ int usersCommand (stackoverflow_cli_opts *opts) {
         printf("name: %s || ", json_object_get_string(json_object_object_get(user, "display_name")));
         printf("type: %s || ", json_object_get_string(json_object_object_get(user, "user_type")));
         printf("reputation: %i || ", json_object_get_int(json_object_object_get(user, "reputation")));
+        printf("questions: %i || ", json_object_get_int(json_object_object_get(user, "question_count")));
+        printf("answers: %i || ", json_object_get_int(json_object_object_get(user, "answer_count")));
+        printf("up_votes: %i || ", json_object_get_int(json_object_object_get(user, "up_vote_count")));
+        printf("down_votes: %i || ", json_object_get_int(json_object_object_get(user, "down_vote_count")));
         printf("created: %i/%i/%i %i:%i:%i",
                created->tm_mday,
                created->tm_mon + 1,
