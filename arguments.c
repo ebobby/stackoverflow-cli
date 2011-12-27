@@ -13,7 +13,6 @@ void printUsage (const char *name, const char *msg) {
     printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
     printf("\t--tagged <string>\tList of tags delimited by semicolons at least one has to be on the questions.\n");
     printf("\t--nottagged <string>\tList of tags delimited by semicolons that must not be in the question.\n");
-    printf("\t--intitle <string>\tA string that must appear verbatim in the title.\n");
     printf("\n");
     printf("Users:\n");
     printf("\t--users\t\t\tSpecies this operation.\n");
