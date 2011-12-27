@@ -27,14 +27,15 @@ static size_t requestCallback (char *ptr, size_t size, size_t nmemb, void *usr) 
     return realsize;
 }
 
-char *buildUrl (const char *op, int argc, ...) {
+char *buildUrl (const char *op, const char *ids, int argc, ...) {
     char *result = malloc(URL_BUILDER_ALLOCATION_BLOCK);
     int cur_len = 0, cur_alloc = URL_BUILDER_ALLOCATION_BLOCK;
     va_list ap;
-    char *key = NULL, *value = NULL, *escaped_key = NULL, *escaped_value = NULL;
-    int key_len, value_len, i;
+    char *key = NULL, *value = NULL, *escaped_key = NULL, *escaped_value = NULL, *escaped_ids = NULL;
+    int key_len, value_len, i, ids_len;
     char buffer[URL_BUILDER_ALLOCATION_BLOCK];
     CURL *curlHandle = NULL;
+    char empty_string = '\0';
 
     curl_global_init(CURL_GLOBAL_ALL);
 
@@ -51,9 +52,19 @@ char *buildUrl (const char *op, int argc, ...) {
         return NULL;
     }
 
+    if (ids != NULL) {
+        ids_len = strlen(ids);
+        escaped_ids = curl_easy_escape(curlHandle, ids, ids_len);
+    } else {
+        escaped_ids = &empty_string;
+    }
+
     memset(result, 0, URL_BUILDER_ALLOCATION_BLOCK);
-    snprintf(result, URL_BUILDER_ALLOCATION_BLOCK, "%s%s?", STACKOVERFLOW_API_URL, op);
+    snprintf(result, URL_BUILDER_ALLOCATION_BLOCK, "%s%s/%s?", STACKOVERFLOW_API_URL, op, escaped_ids);
     cur_len = strlen(result);
+
+    if (ids != NULL)
+        curl_free(escaped_ids);
 
     va_start(ap, argc);
     for (i = 0; i < argc; i++) {

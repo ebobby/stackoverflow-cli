@@ -16,6 +16,7 @@ void printUsage (const char *name, const char *msg) {
     printf("\n");
     printf("Users:\n");
     printf("\t--users\t\t\tSearches the users database.\n");
+    printf("\t--id <string>\t\tList of user ids delimited by a semicolon.\n");
     printf("\t--filter <string>\tA string that must appear in the users name.\n");
     printf("\n");
     printf("Generic parameters:\n\n");
@@ -34,6 +35,7 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         { "page",      required_argument, NULL, 'p' },
         { "users",     no_argument,       NULL, 'U' },
         { "filter",    required_argument, NULL, 'f' },
+        { "id",        required_argument, NULL, 'i' },
         { NULL, no_argument, NULL, 0 }
     };
 
@@ -75,6 +77,9 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
             break;
         case 'f':
             opts->filter = optarg;
+            break;
+        case 'i':
+            opts->id = optarg;
             break;
         case 'h':
         case '?':

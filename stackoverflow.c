@@ -4,7 +4,7 @@
 
 int searchCommand (stackoverflow_cli_opts *opts) {
     responseObject response;
-    char *url = buildUrl("search", 5,
+    char *url = buildUrl("search", NULL, 5,
                          "nottagged", opts->nottagged,
                          "tagged", opts->tagged,
                          "intitle", opts->intitle,
@@ -78,7 +78,7 @@ int searchCommand (stackoverflow_cli_opts *opts) {
 
 int usersCommand (stackoverflow_cli_opts *opts) {
     responseObject response;
-    char *url = buildUrl("users", 3,
+    char *url = buildUrl("users", opts->id, 3,
                          "filter", opts->filter,
                          "pagesize", opts->pagesize,
                          "page", opts->page);

@@ -26,6 +26,7 @@ typedef struct stackoverflow_cli_opts {
     char *tagged;
     char *intitle;
     char *filter;
+    char *id;
     char *pagesize;
     char *page;
 } stackoverflow_cli_opts;
@@ -35,7 +36,7 @@ void printUsage (const char *name, const char *msg);
 /********************************************************/
 
 /*** Helpers from stackoverflow.c ***********************/
-char *buildUrl (const char *op, int argc, ...);
+char *buildUrl (const char *op, const char *ids, int argc, ...);
 int searchCommand (stackoverflow_cli_opts *opts);
 int usersCommand (stackoverflow_cli_opts *opts);
 /********************************************************/
