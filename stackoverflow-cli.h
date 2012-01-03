@@ -18,7 +18,7 @@ void freeWebResponse (responseObject *response);
 /********************************************************/
 
 /** Helpers from arguments.c ****************************/
-enum stackoverflow_operation { none = 0, search, users, question, user };
+enum stackoverflow_operation { none = 0, search, users, questions, user };
 
 typedef struct stackoverflow_cli_opts {
     enum stackoverflow_operation operation;
@@ -31,7 +31,7 @@ typedef struct stackoverflow_cli_opts {
     char *page;
 } stackoverflow_cli_opts;
 
-void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts);
+int processArguments (int argc, char **argv, stackoverflow_cli_opts *opts);
 void printUsage (const char *name, const char *msg);
 /********************************************************/
 
@@ -39,6 +39,7 @@ void printUsage (const char *name, const char *msg);
 char *buildUrl (const char *baseUrl, int numPath, int numKeyValues, ...);
 int searchCommand (stackoverflow_cli_opts *opts);
 int usersCommand (stackoverflow_cli_opts *opts);
+int questionsCommand (stackoverflow_cli_opts *opts);
 /********************************************************/
 
 #define STACKOVERFLOW_API_URL "http://api.stackoverflow.com/1.1"

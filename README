@@ -4,7 +4,7 @@ To compile this thing you need libcurl and json-c libraries, downnload the code 
 
 No configure script yet.
 
-Usage: /home/fms/projects/stackoverflow-cli/stackoverflow-cli <operation> [options...]
+Usage: ./stackoverflow-cli <operation> [options...]
 
 Operations has to be one of the following:
 
@@ -16,9 +16,15 @@ Search:
 
 Users:
 	--users			Searches the users database.
+	--id <string>		List of user ids delimited by a semicolon.
 	--filter <string>	A string that must appear in the users name.
+
+Questions:
+	--questions		Searches the questions database with answers.
+	--id <string>		List of question ids delimited by a semicolon.
 
 Generic parameters:
 
 	--pagesize <size>	How many items per page? 100 maximum.
 	--page <page>		What page do you want to see?
+

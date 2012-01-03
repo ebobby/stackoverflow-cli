@@ -19,13 +19,17 @@ void printUsage (const char *name, const char *msg) {
     printf("\t--id <string>\t\tList of user ids delimited by a semicolon.\n");
     printf("\t--filter <string>\tA string that must appear in the users name.\n");
     printf("\n");
+    printf("Questions:\n");
+    printf("\t--questions\t\tSearches the questions database with answers.\n");
+    printf("\t--id <string>\t\tList of question ids delimited by a semicolon.\n");
+    printf("\n");
     printf("Generic parameters:\n\n");
     printf("\t--pagesize <size>\tHow many items per page? 100 maximum.\n");
     printf("\t--page <page>\t\tWhat page do you want to see?\n");
     printf("\n");
 }
 
-void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
+int processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
     static const struct option getopt_long_opts[] = {
         { "search",    no_argument,       NULL, 'S' },
         { "nottagged", required_argument, NULL, 'n' },
@@ -36,6 +40,7 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
         { "users",     no_argument,       NULL, 'U' },
         { "filter",    required_argument, NULL, 'f' },
         { "id",        required_argument, NULL, 'i' },
+        { "questions", no_argument,       NULL, 'Q' },
         { NULL, no_argument, NULL, 0 }
     };
 
@@ -59,6 +64,9 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
             break;
         case 'U':
             opts->operation = users;
+            break;
+        case 'Q':
+            opts->operation = questions;
             break;
         case 'n':
             opts->nottagged = optarg;
@@ -90,6 +98,13 @@ void processArguments (int argc, char **argv, stackoverflow_cli_opts *opts) {
 
     if (opts->operation == none) {
         printUsage(argv[0], NULL);
-        return;
+        return 0;
     }
+
+    if (opts->operation == questions && opts->id == NULL) {
+        printUsage(argv[0], "This operation needs --id to be specified.\n");
+        return 0;
+    }
+
+    return 1;
 }

@@ -150,3 +150,76 @@ int usersCommand (stackoverflow_cli_opts *opts) {
 
     return 1;
 }
+
+int questionsCommand (stackoverflow_cli_opts *opts) {
+    responseObject response;
+    char *url = buildUrl(STACKOVERFLOW_API_URL,
+                         3, 6,
+                         "questions", opts->id, "answers",
+                         "filter", opts->filter,
+                         "pagesize", opts->pagesize,
+                         "page", opts->page);
+
+    if (url == NULL)
+        return 0;
+
+    makeWebRequest(url, &response);
+
+    if (response.size == 0)
+        return 0;
+
+    json_object *jsonDoc = json_tokener_parse(response.data);
+
+    if (jsonDoc == NULL || is_error(jsonDoc)) {
+        fprintf(stderr, "Not a valid JSON response?!\n");
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    json_object *jerror = json_object_object_get(jsonDoc, "error");
+
+    if (jerror != NULL) {
+        fprintf(stderr, "%s\n", json_object_get_string(json_object_object_get(jerror, "message")));
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    json_object *answers = json_object_object_get(jsonDoc, "answers");
+
+    if (json_object_get_type(answers) != json_type_array) {
+        fprintf(stderr, "Answers is expected to be an array!");
+        freeWebResponse(&response);
+        free(url);
+        return 0;
+    }
+
+    for (int i = 0; i < json_object_array_length(answers); i++) {
+        json_object *answer = json_object_array_get_idx(answers, i);
+
+        time_t created_stamp = json_object_get_int(json_object_object_get(answer, "creation_date"));
+        struct tm *created = gmtime(&created_stamp);
+
+        printf("id: %i || ", json_object_get_int(json_object_object_get(answer, "answer_id")));
+        printf("question_title: %s || ", json_object_get_string(json_object_object_get(answer, "title")));
+        printf("accepted: %i || ", json_object_get_boolean(json_object_object_get(answer, "accepted")));
+        printf("up_votes: %i || ", json_object_get_int(json_object_object_get(answer, "up_vote_count")));
+        printf("down_votes: %i || ", json_object_get_int(json_object_object_get(answer, "down_vote_count")));
+        printf("author: %s || ", json_object_get_string(
+                   json_object_object_get(json_object_object_get(answer, "owner"), "display_name")));
+        printf("created: %i/%i/%i %i:%i:%i",
+               created->tm_mday,
+               created->tm_mon + 1,
+               created->tm_year + 1900,
+               created->tm_hour + 1,
+               created->tm_min + 1,
+               created->tm_sec + 1);
+        printf("\n");
+    }
+
+    freeWebResponse(&response);
+    free(url);
+
+    return 1;
+}
