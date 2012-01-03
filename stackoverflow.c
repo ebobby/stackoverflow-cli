@@ -15,8 +15,6 @@ int searchCommand (stackoverflow_cli_opts *opts) {
     if (url == NULL)
         return 0;
 
-    printf("%s\n", url);
-
     makeWebRequest(url, &response);
 
     if (response.size == 0)
@@ -90,8 +88,6 @@ int usersCommand (stackoverflow_cli_opts *opts) {
 
     if (url == NULL)
         return 0;
-
-    printf("%s\n", url);
 
     makeWebRequest(url, &response);
 
