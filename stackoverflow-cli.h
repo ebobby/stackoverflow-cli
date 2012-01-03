@@ -36,11 +36,11 @@ void printUsage (const char *name, const char *msg);
 /********************************************************/
 
 /*** Helpers from stackoverflow.c ***********************/
-char *buildUrl (const char *op, const char *ids, int argc, ...);
+char *buildUrl (const char *baseUrl, int numPath, int numKeyValues, ...);
 int searchCommand (stackoverflow_cli_opts *opts);
 int usersCommand (stackoverflow_cli_opts *opts);
 /********************************************************/
 
-#define STACKOVERFLOW_API_URL "http://api.stackoverflow.com/1.1/"
+#define STACKOVERFLOW_API_URL "http://api.stackoverflow.com/1.1"
 
 #endif

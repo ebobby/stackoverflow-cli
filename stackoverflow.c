@@ -4,7 +4,8 @@
 
 int searchCommand (stackoverflow_cli_opts *opts) {
     responseObject response;
-    char *url = buildUrl("search", NULL, 5,
+    char *url = buildUrl(STACKOVERFLOW_API_URL,
+                         1, 10, "search",
                          "nottagged", opts->nottagged,
                          "tagged", opts->tagged,
                          "intitle", opts->intitle,
@@ -13,6 +14,8 @@ int searchCommand (stackoverflow_cli_opts *opts) {
 
     if (url == NULL)
         return 0;
+
+    printf("%s\n", url);
 
     makeWebRequest(url, &response);
 
@@ -78,13 +81,17 @@ int searchCommand (stackoverflow_cli_opts *opts) {
 
 int usersCommand (stackoverflow_cli_opts *opts) {
     responseObject response;
-    char *url = buildUrl("users", opts->id, 3,
+    char *url = buildUrl(STACKOVERFLOW_API_URL,
+                         2, 6,
+                         "users", opts->id,
                          "filter", opts->filter,
                          "pagesize", opts->pagesize,
                          "page", opts->page);
 
     if (url == NULL)
         return 0;
+
+    printf("%s\n", url);
 
     makeWebRequest(url, &response);
 

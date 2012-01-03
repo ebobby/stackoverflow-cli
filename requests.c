@@ -2,7 +2,7 @@
 
 #include <curl/curl.h>
 
-#define URL_BUILDER_ALLOCATION_BLOCK 256
+#define URL_BUILDER_ALLOCATION_BLOCK 512
 
 static size_t requestCallback (char *ptr, size_t size, size_t nmemb, void *usr) {
     size_t realsize = size * nmemb;
@@ -27,15 +27,25 @@ static size_t requestCallback (char *ptr, size_t size, size_t nmemb, void *usr) 
     return realsize;
 }
 
-char *buildUrl (const char *op, const char *ids, int argc, ...) {
+/*
+ * This is not the most beautiful piece of code ever but I really tried to keep it general enough for
+ * this little app url building needs. --fms
+ *
+ * - baseUrl : base string in which to append everything else, must NOT end with '/' !!
+ * - numPath : number of path "pieces" passed in the vararg list.
+ * - numKeyValues : number of key and values pairs passed in the vararg list (after path pieces).
+ *
+ * If the num* parameters do not match exactly the number of char * passed, it will crash,
+ * there's no way to be sure the numbers are actually correct inside the function (that I know of at least).
+ */
+char *buildUrl (const char *baseUrl, int numPath, int numKeyValues, ...) {
     char *result = malloc(URL_BUILDER_ALLOCATION_BLOCK);
     int cur_len = 0, cur_alloc = URL_BUILDER_ALLOCATION_BLOCK;
     va_list ap;
-    char *key = NULL, *value = NULL, *escaped_key = NULL, *escaped_value = NULL, *escaped_ids = NULL;
-    int key_len, value_len, i, ids_len;
-    char buffer[URL_BUILDER_ALLOCATION_BLOCK];
+    char *key = NULL, *escaped_key = NULL;
+    int key_len, i;
     CURL *curlHandle = NULL;
-    char empty_string = '\0';
+    char *eos = NULL;
 
     curl_global_init(CURL_GLOBAL_ALL);
 
@@ -52,33 +62,20 @@ char *buildUrl (const char *op, const char *ids, int argc, ...) {
         return NULL;
     }
 
-    if (ids != NULL) {
-        ids_len = strlen(ids);
-        escaped_ids = curl_easy_escape(curlHandle, ids, ids_len);
-    } else {
-        escaped_ids = &empty_string;
-    }
-
     memset(result, 0, URL_BUILDER_ALLOCATION_BLOCK);
-    snprintf(result, URL_BUILDER_ALLOCATION_BLOCK, "%s%s/%s?", STACKOVERFLOW_API_URL, op, escaped_ids);
+    strncat(result, baseUrl, URL_BUILDER_ALLOCATION_BLOCK - 1);
     cur_len = strlen(result);
 
-    if (ids != NULL)
-        curl_free(escaped_ids);
-
-    va_start(ap, argc);
-    for (i = 0; i < argc; i++) {
+    va_start(ap, numKeyValues);
+    for (i = 0; i < numPath + numKeyValues; i++) {
         key = va_arg(ap, char *);
-        value = va_arg(ap, char *);
 
-        if (key != NULL && value != NULL) {
+        if (key != NULL) {
             key_len = strlen(key);
-            value_len = strlen(value);
 
             escaped_key = curl_easy_escape(curlHandle, key, key_len);
-            escaped_value = curl_easy_escape(curlHandle, value, value_len);
 
-            if (escaped_key == NULL || escaped_value == NULL) {
+            if (escaped_key == NULL) {
                 fprintf(stderr, "Not enough memory!\n");
                 curl_easy_cleanup(curlHandle);
                 free(result);
@@ -86,29 +83,39 @@ char *buildUrl (const char *op, const char *ids, int argc, ...) {
             }
 
             key_len = strlen(escaped_key);
-            value_len = strlen(escaped_value);
+        } else {
+            key_len = 0;
+        }
 
-            /* current url, plus the new key/value, plus the =, & and the null terminator */
-            if (cur_len + key_len + value_len + 3 > cur_alloc) {
-                if (!realloc(result, cur_alloc + URL_BUILDER_ALLOCATION_BLOCK)) {
-                    fprintf(stderr, "Not enough memory!\n");
-                    curl_easy_cleanup(curlHandle);
-                    free(result);
-                    return NULL;
-                } else {
-                    memset(result + cur_alloc, 0, URL_BUILDER_ALLOCATION_BLOCK);
-                    cur_alloc += URL_BUILDER_ALLOCATION_BLOCK;
-                }
+        if (cur_len + key_len + 1 > cur_alloc) {
+            if (!realloc(result, cur_alloc + URL_BUILDER_ALLOCATION_BLOCK)) {
+                fprintf(stderr, "Not enough memory!\n");
+                curl_easy_cleanup(curlHandle);
+                free(result);
+                return NULL;
+            } else {
+                memset(result + cur_alloc, 0, URL_BUILDER_ALLOCATION_BLOCK);
+                cur_alloc += URL_BUILDER_ALLOCATION_BLOCK;
             }
+        }
 
-            memset(buffer, 0, URL_BUILDER_ALLOCATION_BLOCK);
-            snprintf(buffer, URL_BUILDER_ALLOCATION_BLOCK, "%s=%s&", escaped_key, escaped_value);
+        if (i < numPath)
+            eos = "/";
+        else if (i == numPath)
+            eos = "?";
+        else if (eos[0] == '=')
+            eos = "&";
+        else
+            eos = "=";
 
-            strncat(result, buffer, cur_alloc - cur_len - 1);
-            cur_len += strlen(buffer);
+        strncat(result, eos, 1);
+        cur_len++;
+
+        if (key != NULL) {
+            strncat(result, escaped_key, cur_alloc - cur_len - 1);
+            cur_len += key_len;
 
             curl_free(escaped_key);
-            curl_free(escaped_value);
         }
     }
     va_end(ap);
